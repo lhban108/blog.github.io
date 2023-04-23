@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Test1</title>
+</head>
+
+<body>
+  <button class="butn1" id="butn1">butn1</button>
+</body>
+<script>
+  // 统计按钮一秒的点击次数
+  const butn1 = document.getElementById('butn1');
+  butn1.onclick = debounce(function () {
+    console.log('点击一次');
+  }, 1000)
+
+  function debounce(fn, delay) {
+    let num = 0;
+    let timer = null;
+    return function (...args) {
+      num++;
+      fn.apply(this, args);
+      if (timer) return
+      timer = setTimeout(() => {
+        console.log('一共点击了' + num + '次');
+        num = 0;
+        timer = null;
+      }, delay)
+    }
+  }
+</script>
+
+</html>

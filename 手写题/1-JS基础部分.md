@@ -1,14 +1,14 @@
-# JS 基础手写题
+# JS 基础手写题 —— 函数相关
 
-## 1. 浅/深拷贝
+### 1. 浅/深拷贝
 
 浅拷贝：
 
-- Object.assign()
-- 函数库 lodash 的 lodash.clone 方法
+- `Object.assign()`
+- 函数库 lodash 的 `lodash.clone` 方法
 - 展开运算符 …
-- Array.prototype.concat()
-- Array.prototype.slice()
+- `Array.prototype.concat()`
+- `Array.prototype.slice()`
 
 ```JavaScript
 // 浅拷贝实现过程
@@ -93,8 +93,8 @@ function deepClone(obj, hash = new WeakMap()) {
   const cloneObj = new obj.constructor();
   hash.set(obj, cloneObj)
   for (key in obj) {
-    if (Object.hasOwnProperty.call(obj, key)) {
     // if (obj.hasOwnProperty(key)) {
+    if (Object.hasOwnProperty.call(obj, key)) {
       cloneObj[key] = deepClone(obj[key], hash)
     }
   }
@@ -103,4 +103,119 @@ function deepClone(obj, hash = new WeakMap()) {
 
 ```
 
-## 2. 防抖/节流
+### 2. 防抖/节流
+
+防抖(debounce)：触发事件后，在 n 秒后只能执行一次，如果在 n 秒内又触发了事件，则会重新计算函数的执行时间
+防抖使用场景：
+
+- 1. 搜索框输入查询 —— 如果用户一直在输入中，等用户停止输入的时候，再调用，设置一个合适的时间间隔，有效减轻服务端压力
+- 2. 表单验证 —— 手机号、邮箱格式的输入验证检测
+- 3. 按钮提交事件
+- 4. 浏览器窗口缩放 —— resize事件，窗口停止改变大小之后再重新计算布局，防止重复渲染
+  
+```JavaScript
+// 防抖函数 debounce
+function debounce(fn, delay = 500) {
+  let timeout = null;
+  return function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      fn.apply(this, arguments);
+      timeout = null;
+    }, delay)
+  }
+}
+
+// 验证
+const inputDom = docement.getElementById('input1');
+inputDom.addEventListener('keyup', debounce(functuon(){
+  console.log(inputDom.value);
+}, 600))
+```
+
+节流(throttle)：触发事件后的 n 秒内不再触发该事件
+
+节流使用场景：
+
+- 1. 按钮点击事件 —— 高频点击提交，表单重复提交
+- 2. 滚动加载，加载更多活滚动到底部监听
+- 3. 拖拽事件
+
+```JavaScript
+// 节流函数1: throttle
+function throttle(fn, delay = 500) {
+  let flag = false;
+  return function(...args) {
+    if (flag) return
+    flag = true;
+    setTimeout(() => {
+      fn.apply(this, args);
+      flag = false;
+    }, delay)
+  }
+}
+
+// 节流函数2: throttle
+function throttle(fn, delay = 500) {
+  let timer = null;
+  return function(...args) {
+    if (!timer) {
+      timer = setTimeout(() => {
+        fn.apply(this, args);
+        timer = null;
+      }, delay)
+    }
+  }
+}
+
+// 验证
+let div1 = docuemnt.getElementById('div1');
+div1.addEventListener('drag', throttle(function(e) {
+  console.log(e.offsetX, e.offsetY);
+}, 200))
+```
+
+应用场景一：统计按钮一秒的点击次数
+
+```HTML
+<body>
+  <button id="butn1">butn</button>
+</body>
+<script>
+  const butn1 = document.getElementById('butn1');
+  butn1.onclick = debounce(function() {
+    console.log('点击一次');
+  }, 1000)
+
+  function debounce(fn, delay) {
+    let num = 0;
+    let timer = null;
+    return function(...args) {
+      num++;
+      fn.apply(this, args);
+      if (timer) return
+      timer = setTimeout(() => {
+        console.log('一共点击了' + num + '次');
+        num = 0;
+        timer = null;
+      }, delay)
+    }
+  }
+</script>
+```
+
+### 3. 函数柯里化
+
+### 4.Call/Bind/Apply
+
+### 6. sleep —— 实现一个函数，n秒后执行函数func
+
+### 7.手写一个 菲波那切数列
+
+### 8.实现一个sum函数
+
+### 9.手写 instanceof()、获取JS类型函数
+
+### 10.手写一个JSONP
+
+> [42+高频js手写题及答案](https://mp.weixin.qq.com/s/CIDYqlXxq4aWY6UizjfZvg)
