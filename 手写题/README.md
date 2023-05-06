@@ -11,5 +11,23 @@
 
 [3. 手写题 —— 数组相关](https://github.com/lhban108/blog.github.io/blob/main/%E6%89%8B%E5%86%99%E9%A2%98/3-%E6%95%B0%E7%BB%84%E7%9B%B8%E5%85%B3%E9%83%A8%E5%88%86.md)
 
-类数组转化为数组的4种方式、数组随机打乱、数组扁平化
-fill、map、reduce、forEach、filter、some
+类数组转化为数组的4种方式
+数组随机打乱
+数组扁平化
+Array.prototype.fill
+Array.prototype.map
+Array.prototype.reduce
+Array.prototype.forEach
+Array.prototype.filter
+Array.prototype.some
+
+[4. 手写题 —— 综合题](https://github.com/lhban108/blog.github.io/blob/main/%E6%89%8B%E5%86%99%E9%A2%98/4-%E7%BB%BC%E5%90%88%E6%89%8B%E5%86%99%E9%A2%98.md)
+
+判断两个对象是否相等
+
+[5. 手写题 —— Promise题](https://github.com/lhban108/blog.github.io/blob/main/%E6%89%8B%E5%86%99%E9%A2%98/5-Promise.md)
+
+Promise 异步调度函数 - 1 （头条题）
+Promise 异步调度函数 - 2 （Promise 对象池）
+Promise 异步调度函数 - 3 (Promise 串行与并行)
+Promise 异步调度函数 - 4 (Promise 指定并发调度个数)
