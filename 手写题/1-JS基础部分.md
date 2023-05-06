@@ -206,6 +206,23 @@ div1.addEventListener('drag', throttle(function(e) {
 
 ### 3. 函数柯里化
 
+```JavaScript
+var curry = function(fn) {
+  return function curried(...args) {
+    if (args.length === fn.length) return fn(...args);
+    return (...arg) => curried(...args, ...arg);
+  };
+};
+
+// 验证
+const fn = function sum(a, b, c) { return a + b + c; };
+const curriedSum = curry(fn);
+curriedSum(1)(2)(3); // 6
+curriedSum(1, 2)(3); // 6
+curriedSum(1)(2, 3); // 6
+
+```
+
 ### 4.Call/Bind/Apply
 
 ### 6. sleep —— 实现一个函数，n秒后执行函数func
@@ -216,6 +233,44 @@ div1.addEventListener('drag', throttle(function(e) {
 
 ### 9.手写 instanceof()、获取JS类型函数
 
+```JavaScript
+// instanceof
+function instanceOf(left, right) {
+  let proto = left.__proto__;
+  const prototype = right.constructor;
+  while(true) {
+    if (proto === null) return false;
+    if (proto === prototype) return true;
+    proto = proto.__proto__;
+  }
+}
+```
+
 ### 10.手写一个JSONP
+
+```JavaScript
+// 解题思路：
+// 1. 如果是简单数据类型，String(obj)
+// 2. 如果是数组，取数组的值，加上 []
+// 3. 如果是对象，取键值对，加上 {}
+function jsonStringify(obj) {
+  const type = typeof obj;
+  if (type !== 'object' || obj === null) {
+    if (/string|undefined|function/.test(type)) {
+      obj = '"' + obj + '"';
+    }
+    return String(obj);
+  } else {
+    const json = [];
+    const isArray = obj && Array.isArray(obj);
+    for (const key in obj) {
+      let val = obj[key];
+      val = jsonStringify(val);
+      json.push((isArray ? '' : '"' + key + '":') + String(val));
+    }
+    return (isArray ? '[' : '{' ) + String(json) + (isArray ? ']' : '}');
+  }
+}
+```
 
 > [42+高频js手写题及答案](https://mp.weixin.qq.com/s/CIDYqlXxq4aWY6UizjfZvg)
