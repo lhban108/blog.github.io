@@ -208,9 +208,9 @@ div1.addEventListener('drag', throttle(function(e) {
 
 ```JavaScript
 var curry = function(fn) {
-  return function curried(...args) {
-    if (args.length === fn.length) return fn(...args);
-    return (...arg) => curried(...args, ...arg);
+  return function curried(...args1) {
+    if (args1.length === fn.length) return fn(...args1);
+    return (...args2) => curried(...args1, ...args2);
   };
 };
 
@@ -225,13 +225,96 @@ curriedSum(1)(2, 3); // 6
 
 ### 4.Call/Bind/Apply
 
+- **call** : `fn.call (this, arg1, arg2, arg3, ...)`
+  - call 的第一个参数是绑定的this（默认指向全局 window/global (非严格模式) ）
+  - 第二个参数是一个参数列表，如果有多个参数，则依次传入
+- **apply** : `fn.apply (this, [...args])`
+  - apply 的第一个参数是绑定的this（默认指向全局 window/global (非严格模式)）
+  - 第二个参数一个参数数组
+- **Bind** : `fn.bind (this, arg1, arg2, arg3, ...)`
+
+```JavaScript
+// 手写 Call
+Function.property.call2 = function() {
+  // 1. 找到 this 和 参数args
+  let [thisArg, ...args] = [...arguments];
+  if (!thisArg) {
+    // 如果 thisArg 为 null 或 undefined
+    thisArg = typeof window === 'undefined' ? global : window;
+  }
+
+  // 2. this 绑定函数
+  thisArg.func = this;
+
+  // 3. 执行函数
+  const result = thisArg.func(...args);
+
+  // 4. 删除func（由于原来 thisArg 上没有 func）
+  delete thisArg.func;
+
+  // 5. 返回执行结果
+  return result;
+}
+
+```
+
+```JavaScript
+// 手写 apply
+Function.property.apply2 = function() {
+  let [thisArg, args] = [...arguments];
+  if (!thisArg) {
+    // 如果 thisArg 为 null 或 undefined
+    thisArg = typeof window === 'undefined' ? global : window;
+  }
+  thisArg.func = this;
+
+  const result = thisArg.func(...args);
+
+  delete thisArg.func;
+
+  return result;
+}
+```
+
+```JavaScript
+// 手写 bind
+Function.property.bind2 = function() {
+  const [thisArg, ...args] = [...arguments];
+
+  const fn = this;
+
+  const resFn = function() {
+    return fn.apply(this instanceof resFn ? this : thisArg, args.concat(...arguments));
+  }
+
+  function temp() {}
+  temp.property = this.property;
+  resFn.property = new temp();
+
+  return resFn;
+}
+```
+
 ### 6. sleep —— 实现一个函数，n秒后执行函数func
+
+```JavaScript
+function sleepFunc(func, n) {
+  const delay = n * 1000; // 秒 换算为 毫秒
+  const startTime = Date.now();
+  while(Date.now() - startTime < delay) {
+    continue;
+  }
+  func();
+}
+```
 
 ### 7.手写一个 菲波那切数列
 
+斐波那契数列： **F(n) = F(n - 1) + F(n - 2)**
+
 ### 8.实现一个sum函数
 
-### 9.手写 instanceof()、获取JS类型函数
+### 9.手写 instanceof() 和 获取JS类型函数
 
 ```JavaScript
 // instanceof
@@ -242,6 +325,20 @@ function instanceOf(left, right) {
     if (proto === null) return false;
     if (proto === prototype) return true;
     proto = proto.__proto__;
+  }
+}
+
+// 获取JS类型函数
+function getType(obj) {
+  if (obj === null) {
+    return 'null';
+  }
+  if (typeof obj === 'object') {
+    const typeStr = Object.prototype.toString.call(obj);
+    // [object Array] [object Object]
+    return typeStr.substring(8, typeStr.length - 1).toLowerCase();
+  } else {
+    return typeof obj;
   }
 }
 ```
