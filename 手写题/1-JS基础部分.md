@@ -312,6 +312,18 @@ function sleepFunc(func, n) {
 
 斐波那契数列： **F(n) = F(n - 1) + F(n - 2)**
 
+```JavaScript
+function fib(n) {
+  let n1 = 1;
+  let n2 = 1;
+
+  for(let i = 2; i < n; i++) {
+    [n1, n2] = [n2, n1 + n2]
+  }
+  return n2;
+}
+```
+
 ### 8.实现一个sum函数
 
 ### 9.手写 instanceof() 和 获取JS类型函数
